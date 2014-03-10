@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout
+        android:id="@+id/pnl_logged_user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:orientation="horizontal"
+        android:weightSum="100">
+
+        <LinearLayout
+            android:id="@+id/pnl_logged_user_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="90" >
+
+            <TextView
+                android:id="@+id/tv_menu_fullname"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@android:style/TextAppearance.Medium"
+                android:text="Neki text" />
+
+            <TextView
+                android:id="@+id/tv_menu_email"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Neki text"
+                android:textStyle="bold" />
+        </LinearLayout>
+        
+        <Button
+            android:id="@+id/btn_menu_logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+       	    android:layout_weight="10"
+            android:text="@string/logout"
+            android:onClick="logout" />
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pnl_logged_user"
+        android:paddingLeft="@dimen/list_padding"
+        android:paddingRight="@dimen/list_padding" />
+
+</RelativeLayout>

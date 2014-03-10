@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+         >
+
+        <!-- Registration Form -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dip" >
+
+            <!-- Full Name Label -->
+
+            <TextView
+                style="@style/LightText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Full Name"
+                />
+
+            <EditText
+                android:id="@+id/reg_fullname"
+                style="@style/LightText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dip"
+                android:layout_marginTop="5dip"
+                android:singleLine="true" />
+            <!-- Email Label -->
+
+            <TextView
+                style="@style/LightText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Email"
+                 />
+
+            <EditText
+                android:id="@+id/reg_email"
+                style="@style/LightText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dip"
+                android:layout_marginTop="5dip"
+                android:inputType="textEmailAddress"
+                android:singleLine="true" />
+            <!-- Password Label -->
+
+            <TextView
+                style="@style/LightText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Password"
+                 />
+
+            <EditText
+                style="@style/LightText"
+                android:id="@+id/reg_password"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:password="true"
+                android:singleLine="true" />
+            <!-- Register Button -->
+
+            <Button
+                android:id="@+id/btnRegister"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dip"
+                android:text="Register New Account" />
+            <!-- Link to Login Screen -->
+
+         
+        </LinearLayout>
+        <!-- Registration Form Ends -->
+    </RelativeLayout>

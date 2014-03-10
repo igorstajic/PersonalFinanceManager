@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="15dp" >
+
+    <Button
+        android:id="@+id/btn_from_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="From date:" />
+
+    <TextView
+        android:id="@+id/label_from_date"
+        style="@style/LightGrayText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/btn_from_date"
+        android:layout_toRightOf="@id/btn_from_date"
+        android:text="11-3-2014 "
+        android:textAppearance="@android:style/TextAppearance.Large" />
+
+    <Button
+        android:id="@+id/btn_until_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/btn_from_date"
+        android:layout_alignRight="@id/btn_from_date"
+        android:layout_below="@id/btn_from_date"
+        android:text="Until date:" />
+
+    <TextView
+        android:id="@+id/label_until_date"
+        style="@style/LightGrayText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/btn_until_date"
+        android:layout_below="@id/btn_from_date"
+        android:layout_toRightOf="@id/btn_until_date"
+        android:gravity="center_vertical"
+        android:text="11-4-2013"
+        android:textAppearance="@android:style/TextAppearance.Large" />
+
+    <Button
+        android:id="@+id/btn_apply_filter"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_until_date"
+        android:text="Apply" />
+
+    <LinearLayout
+        android:id="@+id/transactions_table_header"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_apply_filter"
+        android:orientation="horizontal"
+        android:paddingTop="30dp"
+        android:weightSum="100" >
+
+        <TextView
+            style="@style/LightGrayText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="40"
+            android:gravity="center_horizontal"
+            android:text="Amount" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="@android:color/white" />
+
+        <TextView
+            style="@style/LightGrayText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="30"
+            android:gravity="center_horizontal"
+            android:text="Date" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="@android:color/white" />
+
+        <TextView
+            style="@style/LightGrayText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="20"
+            android:gravity="center_horizontal"
+            android:text="User" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/top_border"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_above="@id/transactions_table_header"
+        android:background="@android:color/white" />
+
+    <View
+        android:id="@+id/bottom_border"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/transactions_table_header"
+        android:background="@android:color/white" />
+
+    <ListView
+        android:id="@+id/lv_filtered_transactions"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/bottom_border" >
+    </ListView>
+
+</RelativeLayout>

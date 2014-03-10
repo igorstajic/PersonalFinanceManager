@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="15dp" >
+
+    <TextView
+        android:id="@+id/label_balance"
+        style="@style/LightText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Balance : " />
+
+    <TextView
+        android:id="@+id/textview_balance_value"
+        style="@style/LightText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/label_balance"
+        android:gravity="center"
+        android:text="loading..." />
+
+    <View
+        android:id="@+id/separator_line"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/label_balance"
+        android:background="@android:color/white" />
+
+    <EditText
+        android:id="@+id/textview_transaction_amount"
+        style="@style/LightText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/separator_line"
+        android:gravity="center"
+        android:hint="Enter transaction amount"
+        android:inputType="numberDecimal"
+        android:paddingTop="50dp"
+        android:textCursorDrawable="@null" />
+
+    <Button
+        android:id="@+id/btn_add_income"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textview_transaction_amount"
+        android:text="New income" />
+
+    <Button
+        android:id="@+id/btn_add_expence"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/textview_transaction_amount"
+        android:text="New expence" />
+
+    <LinearLayout
+       
+        android:id="@+id/ll_table_header"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_add_expence"
+        android:orientation="horizontal"
+        android:paddingTop="30dp"
+        android:weightSum="100" >
+
+        <TextView
+            style="@style/LightGrayText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="40"
+            android:gravity="center_horizontal"
+            android:text="Amount" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="@android:color/white" />
+
+        <TextView
+            style="@style/LightGrayText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="30"
+            android:gravity="center_horizontal"
+            android:text="Date" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="@android:color/white" />
+
+        <TextView
+            style="@style/LightGrayText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="20"
+            android:gravity="center_horizontal"
+            android:text="User" />
+    </LinearLayout>
+<View
+        android:id="@+id/separator_line2"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/ll_table_header"
+        android:background="@android:color/white" />
+    <ListView
+        android:layout_below="@id/separator_line2"
+        android:id="@+id/lv_recent_transactions"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" 
+        
+        >
+    </ListView>
+
+    
+    <Button
+        android:id="@+id/btn_more_transactions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/lv_recent_transactions"
+        android:text="More transactions..." />
+    
+</RelativeLayout>

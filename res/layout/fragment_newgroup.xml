@@ -1,0 +1,68 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+     >
+
+    <TextView
+	    android:id="@+id/label_group_name"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentLeft="true"
+	    android:textAppearance="@android:style/TextAppearance.Medium"
+	    android:layout_alignBaseline="@+id/ng_name_text"
+	    android:text="Group name:" />
+    
+    <EditText
+        style="@style/LightText"
+        android:id="@id/ng_name_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/prompt_name"
+        android:layout_toRightOf="@id/label_group_name"
+        android:inputType="text"
+        android:maxLines="1"
+        android:singleLine="true" />
+
+     <Button
+        android:id="@+id/ng_add_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ng_name_text"
+        android:layout_centerHorizontal="true"
+        android:drawableLeft="@android:drawable/ic_input_add"
+        android:text="@string/add_user" />
+     
+     <EditText
+         style="@style/LightText"
+        android:id="@+id/ng_user_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ng_add_user"
+        android:hint="@string/prompt_email"
+        android:inputType="textEmailAddress"
+        android:maxLines="1"
+        android:singleLine="true" />
+
+ 
+    <ListView
+        android:id="@+id/ng_users_list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ng_user_text"
+        android:layout_above="@+id/ng_footer_button"
+        tools:listitem="@layout/removable_row" 
+        >
+        
+    </ListView>
+   
+	<Button
+        android:id="@+id/ng_footer_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+         android:text="@string/finish"
+        android:layout_alignParentBottom="true" />
+
+	
+
+</RelativeLayout>

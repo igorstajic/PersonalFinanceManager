@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Finance manager</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_exit">Exit</string>
+    <string name="action_about">About</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="login">Log in</string>
+    <string name="register">Register</string>
+    <string name="my_groups">My groups</string>
+    <string name="loading_text">Loading&#8230;</string>
+    <string name="prompt_name">Name</string>
+    <string name="add_group">Add new group</string>
+    <string name="add_user">Add new user</string>
+    <string name="finish">Finish</string>
+    <string name="logout">Log out</string>
+
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in_register"><b>Sign in</b></string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="action_forgot_password">Recover lost password</string>
+    <string name="login_progress_signing_in">Signing in&#8230;</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    
+    <!-- Error strings -->
+    <string name="error_existing_email">This email address is already in use</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="error_nonexisting_email">This user does not exist</string>
+    <string name="error_adding_myself">You are automaticly added to this group</string>
+    <string name="error_adding_double">Already added</string>
+    
+    
+</resources>

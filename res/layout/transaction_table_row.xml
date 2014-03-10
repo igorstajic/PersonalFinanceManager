@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+     android:weightSum="100"
+    android:orientation="horizontal" >
+
+    <TextView
+        style="@style/LightText"
+        android:id="@+id/tv_transaction_amount"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="40"
+         android:text="9999" android:textAppearance="@android:style/TextAppearance.Small" />
+    
+    <TextView
+        style="@style/LightText"
+        android:id="@+id/tv_transaction_date"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="30"
+        android:text="25-12-2013 13:56"
+        android:textAppearance="@android:style/TextAppearance.Small" />
+    
+    <TextView
+        style="@style/LightText"
+        android:id="@+id/tv_transaction_user"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="20"
+        android:text="somemail@example.com"
+      
+        android:textAppearance="@android:style/TextAppearance.Small" />
+
+</LinearLayout>
