@@ -31,7 +31,7 @@ import com.personalfinancemanager.util.TransactionListRowAdapter;
 
 public class TransactionsFragment extends Fragment {
 
-	private String ref = MainActivity.firebaseRef;
+	private String ref = MainActivity.firebaseURL;
 	Firebase fbRef = new Firebase(ref);
 	Firebase thisGroupRef;
 	private TransactionListRowAdapter adapter;

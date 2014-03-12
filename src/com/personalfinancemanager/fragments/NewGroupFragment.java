@@ -25,7 +25,7 @@ import com.personalfinancemanager.model.Group;
 
 public class NewGroupFragment extends Fragment {
 
-	private String ref = MainActivity.firebaseRef;
+	private String ref = MainActivity.firebaseURL;
 	Firebase fbRef = new Firebase(ref);
 
 	NewGroupListAdapter adapter;
@@ -121,7 +121,7 @@ public class NewGroupFragment extends Fragment {
 									.setError(getString(R.string.error_nonexisting_email));
 							focusView = mEmailView;
 							cancel = true;
-						} else if (mEmail.equals(parentActivity.getmEmail())) {
+						} else if (mEmail.equals(parentActivity.getCurrentUserEmail())) {
 							mEmailView
 									.setError(getString(R.string.error_adding_myself));
 							focusView = mEmailView;
@@ -156,7 +156,7 @@ public class NewGroupFragment extends Fragment {
 
 	private void makeGroup(String groupName, HashMap<String, String> users) {
 
-		String loggedUserEmail = parentActivity.getmEmail();
+		String loggedUserEmail = parentActivity.getCurrentUserEmail();
 		users.put(loggedUserEmail,
 				parentActivity.getUserList().get(loggedUserEmail));
 
@@ -172,7 +172,7 @@ public class NewGroupFragment extends Fragment {
 		}
 
 		Fragment newContent = new MyGroupsFragment();
-		parentActivity.switchContent(newContent);
+		parentActivity.switchCurrentFragment(newContent);
 	}
 
 	public class NewGroupListAdapter extends ArrayAdapter<String> {

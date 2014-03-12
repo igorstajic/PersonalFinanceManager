@@ -37,52 +37,54 @@ import com.personalfinancemanager.model.AppUser;
 
 public class MainActivity extends SlidingFragmentActivity {
 
-	public static final String firebaseRef = "https://mojatestbaza.firebaseio.com/";
+	public static final String firebaseURL = "https://mojatestbaza.firebaseio.com/";
 
-	private String mEmail;
-	private String mPassword;
-	private String mFullName;
+	private String currentUserEmail;
+	private String currentUserPassword;
+	private String currentUserFullName;
+	private Fragment currentlyShownFragment = new StartFragment();
 
-	private Fragment mContent = new StartFragment(); // currently shown fragment
-	private Firebase ref = new Firebase(firebaseRef);
-	private SimpleLogin authClient = new SimpleLogin(ref);
+	private Firebase firebaseRef = new Firebase(firebaseURL);
+	private SimpleLogin firebaseAuthenticationClient = new SimpleLogin(firebaseRef);
 
 	private HashMap<String, String> userList = new HashMap<String, String>();
 
-	public Fragment getmContent() {
-		return mContent;
+	// Key is users email, value is users generated firebase id
+
+	public Fragment getCurrentlyShownFragment() {
+		return currentlyShownFragment;
 	}
 
 	public String getUserFirebaseID() {
-		return userList.get(mEmail);
+		return userList.get(currentUserEmail);
 	}
 
 	public HashMap<String, String> getUserList() {
 		return userList;
 	}
 
-	public String getmFullName() {
-		return mFullName;
+	public String getCurrentUserFullName() {
+		return currentUserFullName;
 	}
 
-	public void setmFullName(String mFullName) {
-		this.mFullName = mFullName;
+	public void setCurrentUserFullName(String mFullName) {
+		this.currentUserFullName = mFullName;
 	}
 
-	public String getmEmail() {
-		return mEmail;
+	public String getCurrentUserEmail() {
+		return currentUserEmail;
 	}
 
-	public void setmEmail(String mEmail) {
-		this.mEmail = mEmail;
+	public void setCurrentUserEmail(String mEmail) {
+		this.currentUserEmail = mEmail;
 	}
 
-	public String getmPassword() {
-		return mPassword;
+	public String getCurrentUserPassword() {
+		return currentUserPassword;
 	}
 
-	public void setmPassword(String mPassword) {
-		this.mPassword = mPassword;
+	public void setCurrentUserPassword(String mPassword) {
+		this.currentUserPassword = mPassword;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -91,40 +93,34 @@ public class MainActivity extends SlidingFragmentActivity {
 		super.onCreate(savedInstanceState);
 
 		if (savedInstanceState != null) {
-			mEmail = savedInstanceState.getString("email");
-			mFullName = savedInstanceState.getString("fullname");
+			currentUserEmail = savedInstanceState.getString("email");
+			currentUserFullName = savedInstanceState.getString("fullname");
 			userList = (HashMap<String, String>) savedInstanceState.getSerializable("users");
 		}
 
+		makeUserList();
+
+		setContentView(R.layout.content_frame);
 		setBehindContentView(R.layout.menu_frame);
 
 		// Customize the SlidingMenu.
-		SlidingMenu sm = getSlidingMenu();
-		sm.setFadeDegree(0.65f);
-		sm.setBackgroundColor(Color.LTGRAY);
-		sm.setBehindOffsetRes(R.dimen.slidingmenu_offset);
-		sm.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+		SlidingMenu slidingMenu = getSlidingMenu();
+		slidingMenu.setFadeDegree(0.65f);
+		slidingMenu.setBackgroundColor(Color.LTGRAY);
+		slidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+		slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
 		setSlidingActionBarEnabled(false);
+		setupSlidingMenuFragment();
 
-		setContentView(R.layout.content_frame);
+	}
 
-		// Sliding menu setup.
-		if (mEmail == null) {
-			getSupportFragmentManager().beginTransaction()
-					.replace(R.id.menu_frame, new SlidingMenuFragment()).commit();
-		} else {
-			getSupportFragmentManager().beginTransaction()
-					.replace(R.id.menu_frame, makeLoggedUserMenu()).commit();
-		}
-
-		// Fill user list.
-		ref.child("users").addChildEventListener(new ChildEventListener() {
+	private void makeUserList() {
+		firebaseRef.child("users").addChildEventListener(new ChildEventListener() {
 
 			@Override
 			public void onChildAdded(DataSnapshot snapshot, String arg1) {
-
-				AppUser temp = snapshot.getValue(AppUser.class);
-				userList.put(temp.getEmailAddress(), snapshot.getName());
+				AppUser tempUser = snapshot.getValue(AppUser.class);
+				userList.put(tempUser.getEmailAddress(), snapshot.getName());
 			}
 
 			@Override
@@ -144,13 +140,26 @@ public class MainActivity extends SlidingFragmentActivity {
 			}
 
 		});
-
 	}
 
-	@Override
-	public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
-		// showMenu();
-		return super.onCreateView(parent, name, context, attrs);
+	private void setupSlidingMenuFragment() {
+		if (currentUserEmail == null) {
+			getSupportFragmentManager().beginTransaction()
+					.replace(R.id.menu_frame, new SlidingMenuFragment()).commit();
+		} else {
+			getSupportFragmentManager().beginTransaction()
+					.replace(R.id.menu_frame, makeLoggedUserMenu()).commit();
+		}
+	}
+	
+	private Fragment makeLoggedUserMenu() {
+		Bundle bun = new Bundle();
+		bun.putString("fullname", currentUserFullName);
+		bun.putString("email", currentUserEmail);
+
+		SlidingMenuFragment retVal = new SlidingMenuFragment();
+		retVal.setArguments(bun);
+		return retVal;
 	}
 
 	@Override
@@ -165,10 +174,10 @@ public class MainActivity extends SlidingFragmentActivity {
 		// Handle item selection.
 		switch (item.getItemId()) {
 		case R.id.action_about:
-			// Show about dialog.
+			// TODO: Show about dialog.
 			return true;
 		case R.id.action_exit:
-			authClient.logout();
+			firebaseAuthenticationClient.logout();
 			finish();
 			return true;
 		default:
@@ -178,20 +187,17 @@ public class MainActivity extends SlidingFragmentActivity {
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		outState.putString("email", mEmail);
-		outState.putString("fullname", mFullName);
+		outState.putString("email", currentUserEmail);
+		outState.putString("fullname", currentUserFullName);
 		outState.putSerializable("users", userList);
-		outState.putString("currentView", mContent.getTag());
-
+		outState.putString("currentView", currentlyShownFragment.getTag());
 		super.onSaveInstanceState(outState);
 	}
 
 	@Override
 	public void onBackPressed() {
-
 		if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			// Add the buttons.
 			builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					// User clicked OK button.
@@ -210,7 +216,7 @@ public class MainActivity extends SlidingFragmentActivity {
 			AlertDialog dialog = builder.create();
 			dialog.show();
 
-		} else if (mContent instanceof LoadingFragment) {
+		} else if (currentlyShownFragment instanceof LoadingFragment) {
 			return;
 		} else {
 			super.onBackPressed();
@@ -218,143 +224,141 @@ public class MainActivity extends SlidingFragmentActivity {
 	}
 
 	// Changing fragment that is currently shown.
-	public void switchContent(Fragment fragment) {
+	public void switchCurrentFragment(Fragment fragment) {
 		String fragmentTag = null;
 		if (fragment instanceof TransactionsFragment) {
 			fragmentTag = "transactions";
 		}
 		// Loading screen fragment should not be on backstack.
-		if ((fragment instanceof LoadingFragment) || (mContent instanceof LoadingFragment)) {
+		if ((fragment instanceof LoadingFragment)
+				|| (currentlyShownFragment instanceof LoadingFragment)) {
 			getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment)
 					.commit();
 
 		} else {
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.content_frame, fragment, fragmentTag)
-					.addToBackStack(mContent.getTag()).commit();
+					.addToBackStack(currentlyShownFragment.getTag()).commit();
 		}
-		mContent = fragment;
+		currentlyShownFragment = fragment;
 		getSlidingMenu().showContent();
 	}
 
 	public void attemptLogin() {
-		switchContent(new LoadingFragment());
+		switchCurrentFragment(new LoadingFragment());
 		startLogin();
 		hideKeyboard();
 	}
-
-	public void registerAndLogin() {
-		switchContent(new LoadingFragment());
-		registerUser();
-	}
-
-	private Fragment makeLoggedUserMenu() {
-		Bundle bun = new Bundle();
-		bun.putString("fullname", mFullName);
-		bun.putString("email", mEmail);
-
-		SlidingMenuFragment retVal = new SlidingMenuFragment();
-		retVal.setArguments(bun);
-		return retVal;
-	}
-
+	
 	private void hideKeyboard() {
 		InputMethodManager imm = (InputMethodManager) this
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(this.findViewById(android.R.id.content).getWindowToken(),
 				InputMethodManager.HIDE_NOT_ALWAYS);
 	}
-
+	
 	private Boolean startLogin() {
-		authClient.loginWithEmail(mEmail, mPassword, new SimpleLoginAuthenticatedHandler() {
-			public void authenticated(Error error, User user) {
-				if (error != null) {
-					// There was an error logging into this account.
-					Bundle bun = new Bundle();
+		firebaseAuthenticationClient.loginWithEmail(currentUserEmail, currentUserPassword,
+				new SimpleLoginAuthenticatedHandler() {
+					public void authenticated(Error error, User user) {
+						if (error != null) {
+							// There was an error logging into this account.
+							Bundle bun = new Bundle();
 
-					bun.putInt("error", error.ordinal());
+							bun.putInt("error", error.ordinal());
 
-					LoginFragment newLoginFragment = new LoginFragment();
-					newLoginFragment.setArguments(bun);
+							LoginFragment newLoginFragment = new LoginFragment();
+							newLoginFragment.setArguments(bun);
 
-					switchContent(newLoginFragment);
+							switchCurrentFragment(newLoginFragment);
 
-				} else {
-					switchContent(new StartFragment());
-					Toast.makeText(MainActivity.this, "Connected", Toast.LENGTH_SHORT).show();
+						} else {
+							switchCurrentFragment(new StartFragment());
+							Toast.makeText(MainActivity.this, "Connected", Toast.LENGTH_SHORT)
+									.show();
 
-					ref.child("users").addChildEventListener(new ChildEventListener() {
-						@Override
-						public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
-							AppUser temp = snapshot.getValue(AppUser.class);
+							firebaseRef.child("users").addChildEventListener(
+									new ChildEventListener() {
+										@Override
+										public void onChildAdded(DataSnapshot snapshot,
+												String previousChildName) {
+											AppUser temp = snapshot.getValue(AppUser.class);
 
-							if (temp.getEmailAddress().equals(mEmail)) {
+											if (temp.getEmailAddress().equals(currentUserEmail)) {
 
-								mFullName = temp.getFullName();
+												currentUserFullName = temp.getFullName();
 
-								getSupportFragmentManager().beginTransaction()
-										.replace(R.id.menu_frame, makeLoggedUserMenu()).commit();
-							}
+												getSupportFragmentManager()
+														.beginTransaction()
+														.replace(R.id.menu_frame,
+																makeLoggedUserMenu()).commit();
+											}
+										}
+
+										@Override
+										public void onCancelled(FirebaseError arg0) {
+										}
+
+										@Override
+										public void onChildChanged(DataSnapshot arg0, String arg1) {
+										}
+
+										@Override
+										public void onChildMoved(DataSnapshot arg0, String arg1) {
+										}
+
+										@Override
+										public void onChildRemoved(DataSnapshot arg0) {
+										}
+
+									});
+
 						}
-
-						@Override
-						public void onCancelled(FirebaseError arg0) {
-						}
-
-						@Override
-						public void onChildChanged(DataSnapshot arg0, String arg1) {
-						}
-
-						@Override
-						public void onChildMoved(DataSnapshot arg0, String arg1) {
-						}
-
-						@Override
-						public void onChildRemoved(DataSnapshot arg0) {
-						}
-
-					});
-
-				}
-			}
-		});
+					}
+				});
 
 		return true;
 
 	}
 
+	public void attempRegister() {
+		switchCurrentFragment(new LoadingFragment());
+		registerAndLogin();
+	}
+
 	// Register new user and log him in.
-	private void registerUser() {
-		authClient.createUser(mEmail, mPassword, new SimpleLoginAuthenticatedHandler() {
-			public void authenticated(Error error, User user) {
-				if (error != null) {
-					// There was an error creating this account.
+	private void registerAndLogin() {
+		firebaseAuthenticationClient.createUser(currentUserEmail, currentUserPassword,
+				new SimpleLoginAuthenticatedHandler() {
+					public void authenticated(Error error, User user) {
+						if (error != null) {
+							// There was an error creating this account.
 
-				} else {
+						} else {
 
-					AppUser newUser = new AppUser(mFullName, mEmail);
-					ref.child("users").push().setValue(newUser);
+							AppUser newUser = new AppUser(currentUserFullName, currentUserEmail);
+							firebaseRef.child("users").push().setValue(newUser);
 
-					Toast.makeText(MainActivity.this, "Register complete!", Toast.LENGTH_SHORT)
-							.show();
-					attemptLogin();
-				}
-			}
-		});
+							Toast.makeText(MainActivity.this, "Register complete!",
+									Toast.LENGTH_SHORT).show();
+							attemptLogin();
+						}
+					}
+				});
 
 	}
 
 	public void logout(View v) {
-		authClient.logout();
-		mEmail = null;
-		mPassword = null;
-		mFullName = null;
+		firebaseAuthenticationClient.logout();
+		currentUserEmail = null;
+		currentUserPassword = null;
+		currentUserFullName = null;
 		getSupportFragmentManager().beginTransaction()
 				.replace(R.id.menu_frame, new SlidingMenuFragment()).commit();
 		// Clear backstack.
 		getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
-		switchContent(new LoginFragment());
+		switchCurrentFragment(new LoginFragment());
 
 	}
 

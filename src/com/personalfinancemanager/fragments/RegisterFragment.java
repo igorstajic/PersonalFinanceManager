@@ -44,7 +44,7 @@ public class RegisterFragment extends Fragment {
 		mFullNameView = (EditText) mFormView.findViewById(R.id.reg_fullname);
 
 		mEmailView = (EditText) mFormView.findViewById(R.id.reg_email);
-		mEmailView.setText(parentActivity.getmEmail());
+		mEmailView.setText(parentActivity.getCurrentUserEmail());
 
 		mPasswordView = (EditText) mFormView.findViewById(R.id.reg_password);
 		mPasswordView
@@ -132,10 +132,10 @@ public class RegisterFragment extends Fragment {
 		} else {
 			// Show a progress spinner, and kick off a background task to
 			// perform the register attempt.
-			parentActivity.setmEmail(mEmail);
-			parentActivity.setmPassword(mPassword);
-			parentActivity.setmFullName(mFullName);
-			parentActivity.registerAndLogin();
+			parentActivity.setCurrentUserEmail(mEmail);
+			parentActivity.setCurrentUserPassword(mPassword);
+			parentActivity.setCurrentUserFullName(mFullName);
+			parentActivity.attempRegister();
 		}
 
 	}

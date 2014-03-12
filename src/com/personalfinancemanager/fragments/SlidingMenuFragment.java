@@ -85,7 +85,7 @@ public class SlidingMenuFragment extends android.support.v4.app.ListFragment {
 			return;
 
 		MainActivity fca = (MainActivity) getActivity();
-		fca.switchContent(fragment);
+		fca.switchCurrentFragment(fragment);
 
 	}
 

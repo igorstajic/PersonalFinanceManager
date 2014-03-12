@@ -35,7 +35,7 @@ public class LoginFragment extends Fragment {
 		parentActivity = (MainActivity) getActivity();
 
 		mEmailView = (EditText) mLoginFormView.findViewById(R.id.email);
-		mEmailView.setText(parentActivity.getmEmail());
+		mEmailView.setText(parentActivity.getCurrentUserEmail());
 
 		mPasswordView = (EditText) mLoginFormView.findViewById(R.id.password);
 		mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -112,8 +112,8 @@ public class LoginFragment extends Fragment {
 		} else {
 			// Show a progress spinner, and kick off a background task to
 			// perform the user login attempt.
-			parentActivity.setmEmail(mEmail);
-			parentActivity.setmPassword(mPassword);
+			parentActivity.setCurrentUserEmail(mEmail);
+			parentActivity.setCurrentUserPassword(mPassword);
 			parentActivity.attemptLogin();
 		}
 

@@ -20,7 +20,7 @@ import com.personalfinancemanager.model.Group;
 
 public class MyGroupsFragment extends android.support.v4.app.ListFragment {
 
-	private String ref = MainActivity.firebaseRef;
+	private String ref = MainActivity.firebaseURL;
 	Firebase userRef = new Firebase(ref);
 
 	MyGroupsRowAdapter adapter;
@@ -86,7 +86,7 @@ public class MyGroupsFragment extends android.support.v4.app.ListFragment {
 
 	private void makeGroup() {
 
-		parentActivity.switchContent(new NewGroupFragment());
+		parentActivity.switchCurrentFragment(new NewGroupFragment());
 
 	}
 
@@ -97,7 +97,7 @@ public class MyGroupsFragment extends android.support.v4.app.ListFragment {
 		info.putString("id", adapter.getItem(position).getId());
 		selectedGroup.setArguments(info);
 
-		parentActivity.switchContent(selectedGroup);
+		parentActivity.switchCurrentFragment(selectedGroup);
 	}
 
 	public class MyGroupsRowAdapter extends ArrayAdapter<Group> {

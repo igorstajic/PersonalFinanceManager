@@ -28,7 +28,7 @@ import com.personalfinancemanager.util.TransactionListRowAdapter;
 public class GroupFragment extends Fragment {
 
 	private String firebaseGroupID;
-	private String ref = MainActivity.firebaseRef;
+	private String ref = MainActivity.firebaseURL;
 	Firebase fbRef = new Firebase(ref);
 	Firebase thisGroupRef;
 
@@ -112,12 +112,12 @@ public class GroupFragment extends Fragment {
 									adapter.sort(new Comparator<Transaction>() {
 
 										@Override
-										public int compare(Transaction lhs,
-												Transaction rhs) {
-											// TODO Auto-generated method stub
-											if (lhs.getDate().getTime() > rhs.getDate().getTime()){
+										public int compare(Transaction moreRecent,
+												Transaction lessRecent) {
+											//The most recent transaction goes on top of the list.
+											if (moreRecent.getDate().getTime() > lessRecent.getDate().getTime()){
 												return -1;
-											} else if (lhs.getDate().getTime() < rhs.getDate().getTime()){
+											} else if (moreRecent.getDate().getTime() < lessRecent.getDate().getTime()){
 												return 1;
 											}
 											return 0;
@@ -128,8 +128,6 @@ public class GroupFragment extends Fragment {
 
 								@Override
 								public void onCancelled(FirebaseError arg0) {
-									// TODO Auto-generated method stub
-
 								}
 
 							});
@@ -156,7 +154,7 @@ public class GroupFragment extends Fragment {
 							Transaction newExpence = new Transaction();
 							newExpence.setAmount(-amount);
 							newExpence.setDate(new Date());
-							newExpence.setUserEmail(parentActivity.getmEmail());
+							newExpence.setUserEmail(parentActivity.getCurrentUserEmail());
 							thisGroupRef
 									.child("transactions")
 									.push()
@@ -204,7 +202,7 @@ public class GroupFragment extends Fragment {
 							Transaction newIncome = new Transaction();
 							newIncome.setAmount(amount);
 							newIncome.setDate(new Date());
-							newIncome.setUserEmail(parentActivity.getmEmail());
+							newIncome.setUserEmail(parentActivity.getCurrentUserEmail());
 							thisGroupRef
 									.child("transactions")
 									.push()
@@ -247,7 +245,7 @@ public class GroupFragment extends Fragment {
 						Bundle info = new Bundle();
 						info.putString("groupID", firebaseGroupID);
 						newFragment.setArguments(info);
-						parentActivity.switchContent(newFragment);
+						parentActivity.switchCurrentFragment(newFragment);
 					}
 				});
 
