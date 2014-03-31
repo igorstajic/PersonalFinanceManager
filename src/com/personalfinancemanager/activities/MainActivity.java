@@ -6,11 +6,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -326,7 +324,6 @@ public class MainActivity extends SlidingFragmentActivity {
 		registerAndLogin();
 	}
 
-	// Register new user and log him in.
 	private void registerAndLogin() {
 		firebaseAuthenticationClient.createUser(currentUserEmail, currentUserPassword,
 				new SimpleLoginAuthenticatedHandler() {
