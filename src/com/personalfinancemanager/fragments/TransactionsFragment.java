@@ -32,9 +32,9 @@ import com.personalfinancemanager.util.TransactionListRowAdapter;
 public class TransactionsFragment extends Fragment {
 
 	private String ref = MainActivity.firebaseURL;
-	Firebase fbRef = new Firebase(ref);
+	Firebase firebaseRef = new Firebase(ref);
 	Firebase thisGroupRef;
-	private TransactionListRowAdapter adapter;
+	private TransactionListRowAdapter transactionListAdapter;
 
 	MainActivity parentActivity;
 
@@ -70,13 +70,11 @@ public class TransactionsFragment extends Fragment {
 		btnApplyFilter = (Button) v.findViewById(R.id.btn_apply_filter);
 		tvFromDate = (TextView) v.findViewById(R.id.label_from_date);
 		tvUntilDate = (TextView) v.findViewById(R.id.label_until_date);
-		lvFilteredTransactions = (ListView) v
-				.findViewById(R.id.lv_filtered_transactions);
-		adapter = new TransactionListRowAdapter(getActivity());
-		lvFilteredTransactions.setAdapter(adapter);
+		lvFilteredTransactions = (ListView) v.findViewById(R.id.lv_filtered_transactions);
+		transactionListAdapter = new TransactionListRowAdapter(getActivity());
+		lvFilteredTransactions.setAdapter(transactionListAdapter);
 
-		thisGroupRef = fbRef.child("groupdata").child(
-				getArguments().getString("groupID"));
+		thisGroupRef = firebaseRef.child("groupdata").child(getArguments().getString("groupID"));
 	}
 
 	@Override
@@ -86,31 +84,26 @@ public class TransactionsFragment extends Fragment {
 
 	}
 
-	
-	
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
-		// TODO Auto-generated method stub
 		outState.putString("fromDate", tvFromDate.getText().toString());
 		outState.putString("untilDate", tvUntilDate.getText().toString());
 		super.onSaveInstanceState(outState);
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		container.removeAllViews();
-		final View formView = inflater.inflate(R.layout.fragment_transactions,
-				null);
+		final View formView = inflater.inflate(R.layout.fragment_transactions, null);
 
 		initRefs(formView);
-
-		SimpleDateFormat labelDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+		SimpleDateFormat labelDateFormat = new SimpleDateFormat("d-M-yyyy");
 		String currentDate = labelDateFormat.format(new Date());
-		if (savedInstanceState == null){
-		tvFromDate.setText(currentDate);
-		tvUntilDate.setText(currentDate);
+		
+		
+		if (savedInstanceState == null) {
+			tvFromDate.setText(currentDate);
+			tvUntilDate.setText(currentDate);
 		} else {
 			tvFromDate.setText(savedInstanceState.getString("fromDate"));
 			tvUntilDate.setText(savedInstanceState.getString("untilDate"));
@@ -122,9 +115,8 @@ public class TransactionsFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				parseDate();
-				adapter.clear();
+				transactionListAdapter.clear();
 				fillTable();
 			}
 		});
@@ -133,12 +125,14 @@ public class TransactionsFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				DialogFragment newFragment = new DatePickerFragment();
-				Bundle bun = new Bundle();
-
-				newFragment.show(parentActivity.getSupportFragmentManager(),
-						"fromDate");
+				String fromDate[] = tvFromDate.getText().toString().split("-");
+				Bundle dateInfo = new Bundle();
+				dateInfo.putInt("year", Integer.parseInt(fromDate[2]));
+				dateInfo.putInt("month", Integer.parseInt(fromDate[1]));
+				dateInfo.putInt("day", Integer.parseInt(fromDate[0]));
+				newFragment.setArguments(dateInfo);
+				newFragment.show(parentActivity.getSupportFragmentManager(), "fromDate");
 			}
 		});
 
@@ -146,10 +140,14 @@ public class TransactionsFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				DialogFragment newFragment = new DatePickerFragment();
-				newFragment.show(parentActivity.getSupportFragmentManager(),
-						"untilDate");
+				String untilDate[] = tvUntilDate.getText().toString().split("-");
+				Bundle dateInfo = new Bundle();
+				dateInfo.putInt("year", Integer.parseInt(untilDate[2]));
+				dateInfo.putInt("month", Integer.parseInt(untilDate[1]));
+				dateInfo.putInt("day", Integer.parseInt(untilDate[0]));
+				newFragment.setArguments(dateInfo);
+				newFragment.show(parentActivity.getSupportFragmentManager(), "untilDate");
 			}
 		});
 
@@ -157,43 +155,31 @@ public class TransactionsFragment extends Fragment {
 	}
 
 	private void fillTable() {
-		thisGroupRef.child("transactions").startAt(parsedFromDate)
-				.endAt(parsedUntilDate)
+		thisGroupRef.child("transactions").startAt(parsedFromDate).endAt(parsedUntilDate)
 				.addChildEventListener(new ChildEventListener() {
 
 					@Override
 					public void onChildRemoved(DataSnapshot arg0) {
-						// TODO Auto-generated method stub
-
 					}
 
 					@Override
 					public void onChildMoved(DataSnapshot arg0, String arg1) {
-						// TODO Auto-generated method stub
-
 					}
 
 					@Override
 					public void onChildChanged(DataSnapshot arg0, String arg1) {
-						// TODO Auto-generated method stub
-
 					}
 
 					@Override
 					public void onChildAdded(DataSnapshot arg0, String arg1) {
-						// TODO Auto-generated method stub
-						adapter.add((Transaction) arg0
-								.getValue(Transaction.class));
-						adapter.sort(new Comparator<Transaction>() {
+						transactionListAdapter.add((Transaction) arg0.getValue(Transaction.class));
+						transactionListAdapter.sort(new Comparator<Transaction>() {
 
 							@Override
 							public int compare(Transaction lhs, Transaction rhs) {
-								// TODO Auto-generated method stub
-								if (lhs.getDate().getTime() > rhs.getDate()
-										.getTime()) {
+								if (lhs.getDate().getTime() > rhs.getDate().getTime()) {
 									return -1;
-								} else if (lhs.getDate().getTime() < rhs
-										.getDate().getTime()) {
+								} else if (lhs.getDate().getTime() < rhs.getDate().getTime()) {
 									return 1;
 								}
 								return 0;
@@ -203,26 +189,19 @@ public class TransactionsFragment extends Fragment {
 
 					@Override
 					public void onCancelled(FirebaseError arg0) {
-						// TODO Auto-generated method stub
-
 					}
 				});
 	}
 
 	private void parseDate() {
 		try {
-
-			SimpleDateFormat queryDateFormat = new SimpleDateFormat(
-					"dd-MM-yyyy HH:mm");
-
-			parsedFromDate = queryDateFormat.parse(
-					tvFromDate.getText().toString() + " 00:00").getTime();
-
-			parsedUntilDate = queryDateFormat.parse(
-					tvUntilDate.getText().toString() + " 23:59").getTime();
+			SimpleDateFormat queryDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+			parsedFromDate = queryDateFormat.parse(tvFromDate.getText().toString() + " 00:00")
+					.getTime();
+			parsedUntilDate = queryDateFormat.parse(tvUntilDate.getText().toString() + " 23:59")
+					.getTime();
 
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -230,33 +209,31 @@ public class TransactionsFragment extends Fragment {
 	public static class DatePickerFragment extends DialogFragment implements
 			DatePickerDialog.OnDateSetListener {
 
-		public DatePickerFragment() {
-		}
+
+		public DatePickerFragment() {}
 
 		@Override
 		public Dialog onCreateDialog(Bundle savedInstanceState) {
 			// Use the current date as the default date in the picker
-			final Calendar c = Calendar.getInstance();
-			int year = c.get(Calendar.YEAR);
-			int month = c.get(Calendar.MONTH);
-			int day = c.get(Calendar.DAY_OF_MONTH);
+
+			int year = getArguments().getInt("year");
+			int month = getArguments().getInt("month");
+			int day = getArguments().getInt("day");
 
 			// Create a new instance of DatePickerDialog and return it
-			return new DatePickerDialog(getActivity(), this, year, month, day);
+			return new DatePickerDialog(getActivity(), this, year, --month, day);
+
 		}
 
 		public void onDateSet(DatePicker view, int year, int month, int day) {
-			// Do something with the date chosen by the user
-
-			month++;
-			TransactionsFragment parent = (TransactionsFragment) getActivity()
-					.getSupportFragmentManager().findFragmentByTag(
-							"transactions");
-
+			
+			TransactionsFragment parent = (TransactionsFragment) getActivity().getSupportFragmentManager()
+					.findFragmentByTag("transactions");
+			
 			if (getTag().equals("fromDate")) {
-				parent.getTvFromDate().setText(day + "-" + month + "-" + year);
+				parent.getTvFromDate().setText(day + "-" + ++month + "-" + year);
 			} else {
-				parent.getTvUntilDate().setText(day + "-" + month + "-" + year);
+				parent.getTvUntilDate().setText(day + "-" + ++month + "-" + year);
 			}
 		}
 	}

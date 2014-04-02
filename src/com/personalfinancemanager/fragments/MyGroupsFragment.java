@@ -2,7 +2,6 @@ package com.personalfinancemanager.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,24 +20,22 @@ import com.personalfinancemanager.model.Group;
 public class MyGroupsFragment extends android.support.v4.app.ListFragment {
 
 	private String ref = MainActivity.firebaseURL;
-	Firebase userRef = new Firebase(ref);
+	Firebase firebaseRef = new Firebase(ref);
 
-	MyGroupsRowAdapter adapter;
+	MyGroupsRowAdapter rowAdapter;
 
 	MainActivity parentActivity;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		container.removeAllViews();
 		parentActivity = (MainActivity) getActivity();
-
-		adapter = new MyGroupsRowAdapter(parentActivity);
+		rowAdapter = new MyGroupsRowAdapter(parentActivity);
 
 		View formView = inflater.inflate(R.layout.fragment_mygroups, null);
 
 		formView.findViewById(R.id.footer_button).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-
 				makeGroup();
 			}
 		});
@@ -49,15 +46,14 @@ public class MyGroupsFragment extends android.support.v4.app.ListFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		Firebase thisUserRef = userRef.child("users").child(parentActivity.getUserFirebaseID())
+		Firebase thisUserRef = firebaseRef.child("users").child(parentActivity.getUserFirebaseID())
 				.child("groups");
 
 		thisUserRef.addChildEventListener(new ChildEventListener() {
 			@Override
 			public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
-				Group temp = snapshot.getValue(Group.class);
-
-				adapter.add(temp);
+				Group addThis = snapshot.getValue(Group.class);
+				rowAdapter.add(addThis);
 
 			}
 
@@ -75,28 +71,24 @@ public class MyGroupsFragment extends android.support.v4.app.ListFragment {
 
 			@Override
 			public void onChildRemoved(DataSnapshot arg0) {
-
-				Group temp = arg0.getValue(Group.class);
-				adapter.remove(temp);
+				Group removeThis = arg0.getValue(Group.class);
+				rowAdapter.remove(removeThis);
 			}
 		});
 
-		setListAdapter(adapter);
+		setListAdapter(rowAdapter);
 	}
 
 	private void makeGroup() {
-
 		parentActivity.switchCurrentFragment(new NewGroupFragment());
-
 	}
 
 	@Override
 	public void onListItemClick(ListView lv, View v, int position, long id) {
 		GroupFragment selectedGroup = new GroupFragment();
 		Bundle info = new Bundle();
-		info.putString("id", adapter.getItem(position).getId());
+		info.putString("id", rowAdapter.getItem(position).getId());
 		selectedGroup.setArguments(info);
-
 		parentActivity.switchCurrentFragment(selectedGroup);
 	}
 
@@ -104,15 +96,12 @@ public class MyGroupsFragment extends android.support.v4.app.ListFragment {
 
 		public MyGroupsRowAdapter(Context context) {
 			super(context, 0);
-
 		}
 
 		@Override
 		public void remove(Group object) {
-
 			Group removeThis = null;
 			for (int i = 0; i < getCount(); i++) {
-
 				if (getItem(i).getId().equals(object.getId())) {
 					removeThis = getItem(i);
 				}

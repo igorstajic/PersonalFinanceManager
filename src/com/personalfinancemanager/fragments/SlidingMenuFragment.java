@@ -12,25 +12,17 @@ import android.widget.TextView;
 
 import com.example.personalfinancemanager.R;
 import com.personalfinancemanager.activities.MainActivity;
-import com.personalfinancemanager.model.AppUser;
 
 public class SlidingMenuFragment extends android.support.v4.app.ListFragment {
 
-	
-	private MainActivity menuActivity;
-
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-
-		menuActivity = (MainActivity) getActivity();
-
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		// There are no arguments when there is no user logged in.
 		if (getArguments() != null) {
-			
 			View thisView = inflater.inflate(R.layout.fragment_menu_logged_user, null);
-			TextView textviewEmail = (TextView)thisView.findViewById(R.id.tv_menu_email);
-			textviewEmail.setText(getArguments().getString("email"));
-			TextView textviewFullName = (TextView)thisView.findViewById(R.id.tv_menu_fullname);
-			textviewFullName.setText(getArguments().getString("fullname"));
+			TextView tvEmail = (TextView) thisView.findViewById(R.id.tv_menu_email);
+			tvEmail.setText(getArguments().getString("email"));
+			TextView tvFullName = (TextView) thisView.findViewById(R.id.tv_menu_fullname);
+			tvFullName.setText(getArguments().getString("fullname"));
 			return thisView;
 		}
 
@@ -40,16 +32,16 @@ public class SlidingMenuFragment extends android.support.v4.app.ListFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		SlidingMenuRowAdapter adapter = new SlidingMenuRowAdapter(getActivity());
+		SlidingMenuRowAdapter menuListAdapter = new SlidingMenuRowAdapter(getActivity());
 
 		if (getArguments() != null) {
-			adapter.add(getString(R.string.my_groups));
+			menuListAdapter.add(getString(R.string.my_groups));
 		} else {
-			adapter.add(getString(R.string.login));
-			adapter.add(getString(R.string.register));
+			menuListAdapter.add(getString(R.string.login));
+			menuListAdapter.add(getString(R.string.register));
 		}
 
-		setListAdapter(adapter);
+		setListAdapter(menuListAdapter);
 	}
 
 	@Override
@@ -59,9 +51,6 @@ public class SlidingMenuFragment extends android.support.v4.app.ListFragment {
 			switch (position) {
 			case 0:
 				newContent = new MyGroupsFragment();
-				break;
-			case 1:
-				
 				break;
 			}
 
@@ -76,35 +65,22 @@ public class SlidingMenuFragment extends android.support.v4.app.ListFragment {
 			}
 		}
 		if (newContent != null)
-			switchFragment(newContent);
-	}
-
-	// the meat of switching the above fragment
-	private void switchFragment(Fragment fragment) {
-		if (getActivity() == null)
-			return;
-
-		MainActivity fca = (MainActivity) getActivity();
-		fca.switchCurrentFragment(fragment);
-
+			((MainActivity) getActivity()).switchCurrentFragment(newContent);
 	}
 
 	public class SlidingMenuRowAdapter extends ArrayAdapter<String> {
 
 		public SlidingMenuRowAdapter(Context context) {
 			super(context, 0);
-
 		}
 
 		public View getView(int position, View convertView, ViewGroup parent) {
 			if (convertView == null) {
-
-				convertView = LayoutInflater.from(getContext()).inflate(
-						R.layout.row, parent, false);
+				convertView = LayoutInflater.from(getContext())
+						.inflate(R.layout.row, parent, false);
 			}
 
-			TextView title = (TextView) convertView
-					.findViewById(R.id.row_title);
+			TextView title = (TextView) convertView.findViewById(R.id.row_title);
 			title.setText(getItem(position));
 
 			return convertView;

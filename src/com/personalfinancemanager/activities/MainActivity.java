@@ -45,9 +45,8 @@ public class MainActivity extends SlidingFragmentActivity {
 	private Firebase firebaseRef = new Firebase(firebaseURL);
 	private SimpleLogin firebaseAuthenticationClient = new SimpleLogin(firebaseRef);
 
-	private HashMap<String, String> userList = new HashMap<String, String>();
-
 	// Key is users email, value is users generated firebase id
+	private HashMap<String, String> userList = new HashMap<String, String>();
 
 	public Fragment getCurrentlyShownFragment() {
 		return currentlyShownFragment;
@@ -149,7 +148,7 @@ public class MainActivity extends SlidingFragmentActivity {
 					.replace(R.id.menu_frame, makeLoggedUserMenu()).commit();
 		}
 	}
-	
+
 	private Fragment makeLoggedUserMenu() {
 		Bundle bun = new Bundle();
 		bun.putString("fullname", currentUserFullName);
@@ -247,14 +246,14 @@ public class MainActivity extends SlidingFragmentActivity {
 		startLogin();
 		hideKeyboard();
 	}
-	
+
 	private void hideKeyboard() {
 		InputMethodManager imm = (InputMethodManager) this
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(this.findViewById(android.R.id.content).getWindowToken(),
 				InputMethodManager.HIDE_NOT_ALWAYS);
 	}
-	
+
 	private Boolean startLogin() {
 		firebaseAuthenticationClient.loginWithEmail(currentUserEmail, currentUserPassword,
 				new SimpleLoginAuthenticatedHandler() {

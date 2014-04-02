@@ -17,12 +17,10 @@ import com.personalfinancemanager.activities.MainActivity;
 
 public class LoginFragment extends Fragment {
 
-	private String error;
-
 	// UI references.
-	private EditText mEmailView;
-	private EditText mPasswordView;
-	private View mLoginFormView;
+	private EditText etEmail;
+	private EditText etPassword;
+	private View formView;
 
 	private MainActivity parentActivity;
 
@@ -30,18 +28,16 @@ public class LoginFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		container.removeAllViews();
 		super.onCreate(savedInstanceState);
-		mLoginFormView = inflater.inflate(R.layout.activity_login, null);
+		formView = inflater.inflate(R.layout.activity_login, null);
 
 		parentActivity = (MainActivity) getActivity();
-
-		mEmailView = (EditText) mLoginFormView.findViewById(R.id.email);
-		mEmailView.setText(parentActivity.getCurrentUserEmail());
-
-		mPasswordView = (EditText) mLoginFormView.findViewById(R.id.password);
-		mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+		etEmail = (EditText) formView.findViewById(R.id.email);
+		etEmail.setText(parentActivity.getCurrentUserEmail());
+		etPassword = (EditText) formView.findViewById(R.id.password);
+		etPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 			@Override
 			public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-				if (id == R.id.login || id == EditorInfo.IME_NULL) {
+				if (id == EditorInfo.IME_NULL) {
 					startLogin();
 					return true;
 				}
@@ -49,29 +45,27 @@ public class LoginFragment extends Fragment {
 			}
 		});
 
-		mEmailView.setText("igorstajic273@gmail.com");
-		mPasswordView.setText("sifra123");
+		etEmail.setText("igorstajic273@gmail.com");
+		etPassword.setText("sifra123");
 
-		mLoginFormView.findViewById(R.id.sign_in_button).setOnClickListener(
-				new View.OnClickListener() {
-					@Override
-					public void onClick(View view) {
-
-						startLogin();
-					}
-				});
-
+		formView.findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				startLogin();
+			}
+		});
+		// If there was an error logging in.
 		if (getArguments() != null) {
 			if (getArguments().getInt("error") == Error.InvalidPassword.ordinal()) {
-				mPasswordView.setError(getString(R.string.error_incorrect_password));
-				mPasswordView.requestFocus();
-			} else if (getArguments().getInt("error") == Error.InvalidEmail.ordinal()){
-				mEmailView.setError(getString(R.string.error_invalid_email));
-				mEmailView.requestFocus();
+				etPassword.setError(getString(R.string.error_incorrect_password));
+				etPassword.requestFocus();
+			} else if (getArguments().getInt("error") == Error.InvalidEmail.ordinal()) {
+				etEmail.setError(getString(R.string.error_invalid_email));
+				etEmail.requestFocus();
 			}
 		}
 
-		return mLoginFormView;
+		return formView;
 	}
 
 	private void startLogin() {
@@ -80,28 +74,28 @@ public class LoginFragment extends Fragment {
 		View focusView = null;
 
 		// Store values at the time of the login attempt.
-		String mEmail = mEmailView.getText().toString();
-		String mPassword = mPasswordView.getText().toString();
+		String mEmail = etEmail.getText().toString();
+		String mPassword = etPassword.getText().toString();
 
 		// Check for a valid password.
 		if (TextUtils.isEmpty(mPassword)) {
-			mPasswordView.setError(getString(R.string.error_field_required));
-			focusView = mPasswordView;
+			etPassword.setError(getString(R.string.error_field_required));
+			focusView = etPassword;
 			cancel = true;
 		} else if (mPassword.length() < 4) {
-			mPasswordView.setError(getString(R.string.error_invalid_password));
-			focusView = mPasswordView;
+			etPassword.setError(getString(R.string.error_invalid_password));
+			focusView = etPassword;
 			cancel = true;
 		}
 
 		// Check for a valid email address.
 		if (TextUtils.isEmpty(mEmail)) {
-			mEmailView.setError(getString(R.string.error_field_required));
-			focusView = mEmailView;
+			etEmail.setError(getString(R.string.error_field_required));
+			focusView = etEmail;
 			cancel = true;
 		} else if (!mEmail.contains("@")) {
-			mEmailView.setError(getString(R.string.error_invalid_email));
-			focusView = mEmailView;
+			etEmail.setError(getString(R.string.error_invalid_email));
+			focusView = etEmail;
 			cancel = true;
 		}
 
@@ -110,8 +104,6 @@ public class LoginFragment extends Fragment {
 			// form field with an error.
 			focusView.requestFocus();
 		} else {
-			// Show a progress spinner, and kick off a background task to
-			// perform the user login attempt.
 			parentActivity.setCurrentUserEmail(mEmail);
 			parentActivity.setCurrentUserPassword(mPassword);
 			parentActivity.attemptLogin();
